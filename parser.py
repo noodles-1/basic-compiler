@@ -1,6 +1,6 @@
 from llvmlite import ir
 from rply import ParserGenerator
-from syntaxtree import Number, Add, Sub, Mul, Div, Print, Declaration, Identifier
+from syntaxtree import Number, Add, Sub, Mul, Div, Print, Declaration, Identifier, Assignment
 
 class Parser():
     def __init__(self, module, builder, printf):
@@ -71,24 +71,22 @@ class Parser():
                 raise ValueError(f'Variable {var_name.getstr()} is not defined')
             
             var_ptr = self.symbol_table[var_name.getstr()]
-            var_val = self.builder.load(var_ptr)
-            new_val = expr.eval()
+            var = Identifier(self.builder, self.module, var_ptr)
 
             if assign_op.gettokentype() == 'ASSIGN':
-                res = new_val
+                res_expr = expr
             elif assign_op.gettokentype() == 'ADD_ASSIGN':
-                res = self.builder.fadd(var_val, new_val)
+                res_expr = Add(self.builder, self.module, var, expr)
             elif assign_op.gettokentype() == 'SUB_ASSIGN':
-                res = self.builder.fsub(var_val, new_val)
+                res_expr = Sub(self.builder, self.module, var, expr)
             elif assign_op.gettokentype() == 'MUL_ASSIGN':
-                res = self.builder.fmul(var_val, new_val)
+                res_expr = Mul(self.builder, self.module, var, expr)
             elif assign_op.gettokentype() == 'DIV_ASSIGN':
-                res = self.builder.fdiv(var_val, new_val)
+                res_expr = Div(self.builder, self.module, var, expr)
             else:
-                raise ValueError(f'Unsupported assignment operator: {assign_op.getstr()}')
+                raise ValueError(f'Unsupported assignment operator: {assign_op.gettokentype()}')
             
-            self.builder.store(res, var_ptr)
-            return res
+            return Assignment(self.builder, self.module, res_expr, var_ptr)
         
         @self.pg.production('print_stmt : PRINT OPEN_PAREN expression CLOSE_PAREN')
         def print_stmt(p):
@@ -119,7 +117,7 @@ class Parser():
         
         @self.pg.production('expression : IDENTIFIER')
         @self.pg.production('expression : NUMBER')
-        def number(p):
+        def expression_terminals(p):
             terminal = p[0]
             if terminal.gettokentype() == 'NUMBER':
                 return Number(self.builder, self.module, terminal.value)

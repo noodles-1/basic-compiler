@@ -42,6 +42,19 @@ class Declaration(BaseBuilder):
         self.builder.store(var_val, self.var_ptr)
 
 """
+Variable assignment
+"""
+class Assignment(BaseBuilder):
+    def __init__(self, builder, module, res_expr, var_ptr):
+        super().__init__(builder, module)
+        self.res_expr = res_expr
+        self.var_ptr = var_ptr
+
+    def eval(self):
+        res_val = self.res_expr.eval()
+        self.builder.store(res_val, self.var_ptr)
+
+"""
 Binary operations
 - Addition
 - Subtraction
