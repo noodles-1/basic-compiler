@@ -1,13 +1,17 @@
 from llvmlite import ir
 
+class BaseBuilder:
+    def __init__(self, builder, module):
+        self.builder: ir.IRBuilder = builder
+        self.module = module
+
 """
 Data types
 - 64-bit double
 """
-class Number():
+class Number(BaseBuilder):
     def __init__(self, builder, module, value):
-        self.builder = builder
-        self.module = module
+        super().__init__(builder, module)
         self.value = value
 
     def eval(self):
@@ -16,10 +20,9 @@ class Number():
 """
 Identifier
 """
-class Identifier():
+class Identifier(BaseBuilder):
     def __init__(self, builder, module, var_ptr):
-        self.builder: ir.IRBuilder = builder
-        self.module = module
+        super().__init__(builder, module)
         self.var_ptr = var_ptr
 
     def eval(self):
@@ -28,10 +31,9 @@ class Identifier():
 """
 Variable declaration
 """
-class Declaration():
+class Declaration(BaseBuilder):
     def __init__(self, builder, module, var_ptr, expr):
-        self.builder: ir.IRBuilder = builder
-        self.module = module
+        super().__init__(builder, module)
         self.var_ptr = var_ptr
         self.expr = expr
 
@@ -46,10 +48,9 @@ Binary operations
 - Multiplication
 - Division
 """
-class BinaryOp():
+class BinaryOp(BaseBuilder):
     def __init__(self, builder, module, left, right):
-        self.builder: ir.IRBuilder = builder
-        self.module = module
+        super().__init__(builder, module)
         self.left = left
         self.right = right
 
@@ -72,12 +73,11 @@ class Div(BinaryOp):
 """
 Print utility function
 """
-class Print():
+class Print(BaseBuilder):
     _global_fmt = None
 
     def __init__(self, builder, module, printf, value):
-        self.builder = builder
-        self.module = module
+        super().__init__(builder, module)
         self.printf = printf
         self.value = value
 
