@@ -1,8 +1,6 @@
-number x = 5;
-print(x);
+number x = 10;
+x = 9;
+print(x); // 9
 
-number y = x * 2;
-print(y);
-
-y = x;
-print(y);
+x *= 2;
+print(x); // 11

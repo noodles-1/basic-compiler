@@ -55,6 +55,9 @@ class Parser():
             else:
                 raise ValueError(f'Unsupported type: {var_type}')
             
+            if var_name.getstr() in self.symbol_table:
+                raise ValueError(f'Variable {var_name.getstr()} is already defined')
+            
             var_ptr = self.builder.alloca(llvm_type, name=var_name.getstr())
             self.symbol_table[var_name.getstr()] = var_ptr
             return Declaration(self.builder, self.module, var_ptr, expr)
