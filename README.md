@@ -2,9 +2,7 @@
 Basic programming language compiled with **LLVM** and **GCC**.
 
 ## Features
-### Printing
-
-#### Display numbers on the terminal
+#### Print on terminal
 Example:
 ```
 print(5 + 1); // 6
