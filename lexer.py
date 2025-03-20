@@ -56,15 +56,13 @@ class Lexer():
         self.lexer.add('LOGICAL_AND', r'\&\&')
 
         # data types
-        self.lexer.add('NUMBER_TYPE', r'float')
+        self.lexer.add('NUMBER_TYPE', r'number')
 
         # identifiers
         self.lexer.add('IDENTIFIER', r'[a-zA-Z_][a-zA-Z0-9_]*')
 
-        # number
+        # values
         self.lexer.add('NUMBER', r'\d+(\.\d+)?')
-
-        # strings
         self.lexer.add('STRING', r'"([^"\\]*(\\.[^"\\]*)*)*"', re.DOTALL)
 
         # ignore single-line comments

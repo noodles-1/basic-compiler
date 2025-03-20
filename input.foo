@@ -1,1 +1,2 @@
-print(5/2);
+number x = 5 + 1;
+print(x);

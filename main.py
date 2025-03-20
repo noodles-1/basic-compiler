@@ -18,7 +18,10 @@ printf = codegen.printf
 pg = Parser(module, builder, printf)
 pg.parse()
 parser = pg.get_parser()
-parser.parse(tokens).eval()
+parsed_stmts = parser.parse(tokens)
+
+for stmt in parsed_stmts:
+    stmt.eval()
 
 codegen.create_ir()
 codegen.save_ir("output.ll")
