@@ -1,9 +1,9 @@
-# Toy Language
+# Foo Language
 Basic programming language compiled with **LLVM** and **GCC**.
 
 ## Features
 ### Printing
-Display integers on the terminal.
+Display numbers on the terminal.
 
 Example:
 ```

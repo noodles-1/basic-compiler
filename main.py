@@ -2,7 +2,7 @@ from lexer import Lexer
 from parser import Parser
 from codegen import CodeGen
 
-fname = "input.toy"
+fname = "input.foo"
 with open(fname) as f:
     text_input = f.read()
 
