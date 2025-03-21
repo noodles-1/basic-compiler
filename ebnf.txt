@@ -23,14 +23,21 @@ condition    : condition LOGICAL_OR condition
              | expression REL_OP expression
              | OPEN_PAREN condition CLOSE_PAREN
 
-expression   : expression ADD expression
-             | expression SUB expression
-             | expression MUL expression
-             | expression DIV expression
+expression   : expression ADD term
+             | expression SUB term
+             | term
+
+term         : term MUL factor
+             | term DIV factor
+             | factor
+
+factor       : unary_negation_expression
              | OPEN_PAREN expression CLOSE_PAREN
              | IDENTIFIER
              | NUMBER
              | STRING
+
+unary_negation_expression : SUB factor
 
 block        : OPEN_BRACE (statement SEMI_COLON | block)* CLOSE_BRACE
 

@@ -1,6 +1,2 @@
-number x = 10;
-x = 9;
-print(x); // 9
-
-x *= 2;
-print(x); // 11
+number n = -5 + 2;
+print(n --1);

@@ -95,31 +95,47 @@ class Parser():
         def print_stmt(p):
             return Print(self.builder, self.module, self.printf, p[2])
 
-        @self.pg.production('expression : expression ADD expression')
-        @self.pg.production('expression : expression SUB expression')
-        @self.pg.production('expression : expression MUL expression')
-        @self.pg.production('expression : expression DIV expression')
+        @self.pg.production('expression : expression ADD term')
+        @self.pg.production('expression : expression SUB term')
         def expression(p):
-            left = p[0]
-            right = p[2]
-            operator = p[1]
-            if operator.gettokentype() == 'ADD':
+            left, op, right = p
+            if op.gettokentype() == 'ADD':
                 return Add(self.builder, self.module, left, right)
-            elif operator.gettokentype() == 'SUB':
+            elif op.gettokentype() == 'SUB':
                 return Sub(self.builder, self.module, left, right)
-            elif operator.gettokentype() == 'MUL':
+
+            raise ValueError(f'Unsupported assignment operator: {op.getstr()}')
+        
+        @self.pg.production('expression : term')
+        def expression_term(p):
+            return p[0]
+        
+        @self.pg.production('term : term MUL factor')
+        @self.pg.production('term : term DIV factor')
+        def term(p):
+            left, op, right = p
+            if op.gettokentype() == 'MUL':
                 return Mul(self.builder, self.module, left, right)
-            elif operator.gettokentype() == 'DIV':
+            elif op.gettokentype() == 'DIV':
                 return Div(self.builder, self.module, left, right)
 
-            raise ValueError(f'Unsupported assignment operator: {operator.getstr()}')
+            raise ValueError(f'Unsupported assignment operator: {op.getstr()}')
+        
+        @self.pg.production('term : factor')
+        def term_factor(p):
+            return p[0]
+        
+        @self.pg.production('factor : SUB factor')
+        def unary_negation(p):
+            operand = p[1]
+            return Sub(self.builder, self.module, Number(self.builder, self.module, 0), operand)
                 
-        @self.pg.production('expression : OPEN_PAREN expression CLOSE_PAREN')
+        @self.pg.production('factor : OPEN_PAREN expression CLOSE_PAREN')
         def expression_parentheses(p):
             return p[1]
         
-        @self.pg.production('expression : IDENTIFIER')
-        @self.pg.production('expression : NUMBER')
+        @self.pg.production('factor : IDENTIFIER')
+        @self.pg.production('factor : NUMBER')
         def expression_terminals(p):
             terminal = p[0]
             if terminal.gettokentype() == 'NUMBER':
